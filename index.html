@@ -77,9 +77,14 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .badge-orange{background:#FB923C18;color:var(--orange)}
 .bar-bg{background:var(--border);border-radius:99px;height:5px;overflow:hidden}
 .bar-fill{height:5px;border-radius:99px;transition:width .6s ease}
-.toggle-row{display:flex;gap:6px;margin-bottom:12px}
-.tgl{padding:6px 14px;border-radius:99px;border:1px solid var(--border);background:transparent;color:var(--t2);font-size:13px;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:inherit}
+.toggle-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tgl{padding:6px 12px;border-radius:99px;border:1px solid var(--border);background:transparent;color:var(--t2);font-size:13px;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:inherit;flex:1 1 auto;min-width:0}
 .tgl.on{background:var(--s2);border-color:var(--green);color:var(--green)}
+.habit-stat-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.habit-stat-row::-webkit-scrollbar{display:none}
+.habit-stat-pill{min-width:78px;background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:10px 10px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.habit-stat-pill .label{font-size:11px;color:var(--t2);text-align:center;line-height:1.2}
+.habit-stat-pill .value{font-size:13px;font-weight:700}
 
 /* ── HOME ── */
 .balance-hero{background:linear-gradient(145deg,#0B2016,#102418);border:1px solid #1B3823;border-radius:18px;padding:18px;margin-bottom:12px}
@@ -822,16 +827,12 @@ function renderHabitCalendar(){
       <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:#22C55E;border-radius:3px;display:inline-block"></span>67–100%</span>
     </div>
     <div class="sl">Cumplimiento por hábito</div>
-    ${habitStats.length?habitStats.map(h=>`
-      <div class="card" style="margin-bottom:8px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-          <span style="font-size:18px">${h.emoji}</span>
-          <div style="flex:1;font-size:14px;font-weight:500">${h.name}</div>
-          <div style="font-size:16px;font-weight:700;color:${h.pct>=80?'var(--green)':h.pct>=50?'var(--amber)':'var(--red)'}">${h.pct}%</div>
-        </div>
-        <div class="bar-bg"><div class="bar-fill" style="width:${h.pct}%;background:${h.pct>=80?'var(--green)':h.pct>=50?'var(--amber)':'var(--red)'}"></div></div>
-        <div style="font-size:11px;color:var(--t2);margin-top:5px">${h.done} de ${daysInMonth} días</div>
-      </div>`).join(''):`<div class="empty"><p>Sin hábitos para analizar</p></div>`}
+    ${habitStats.length?`<div class="habit-stat-row">${habitStats.map(h=>`
+      <div class="habit-stat-pill">
+        <div style="font-size:18px">${h.emoji}</div>
+        <div class="value">${h.pct}%</div>
+        <div class="label">${h.name}</div>
+      </div>`).join('')}</div>`:`<div class="empty"><p>Sin hábitos para analizar</p></div>`}
     <div id="cal-day-detail"></div>`;
 }
 function showCalDay(str){
