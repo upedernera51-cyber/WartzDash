@@ -56,7 +56,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .sl{font-size:11px;font-weight:600;color:var(--t3);letter-spacing:.9px;text-transform:uppercase;margin:18px 0 9px}
 .card{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:10px}
 .row{display:flex;align-items:center;gap:10px}
-.inp{flex:1;background:var(--s1);border:1px solid var(--border);border-radius:11px;padding:11px 14px;color:var(--txt);font-size:15px;outline:none;appearance:none;-webkit-appearance:none;font-family:inherit}
+.inp{flex:1;background:var(--s1);border:1px solid var(--border);border-radius:11px;padding:11px 14px;color:var(--txt);font-size:15px;outline:none;appearance:none; -webkit-appearance:none;font-family:inherit}
 .inp::placeholder{color:var(--t3)}
 .inp:focus{border-color:var(--green)}
 .plus-btn{width:44px;height:44px;background:var(--green);border:none;border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .14s}
@@ -424,13 +424,11 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
         <div class="bal-sub" style="border-top:1px solid #1B3823;padding-top:12px;margin-top:12px">
           <div class="bsi"><div class="v" style="color:var(--green)" id="fin-inc">$0</div><div class="l">Ingresos</div></div>
           <div class="bsi" style="border-left:1px solid #1B3823"><div class="v" style="color:var(--red)" id="fin-exp">$0</div><div class="l">Gastos</div></div>
-          <div class="bsi" style="border-left:1px solid #1B3823"><div class="v" style="color:var(--blue)" id="fin-tfr">$0</div><div class="l">Transf.</div></div>
         </div>
       </div>
       <div class="type-row">
         <button class="type-btn inc" id="ft-inc" onclick="setFinType('income')">+ Ingreso</button>
         <button class="type-btn" id="ft-exp" onclick="setFinType('expense')">− Gasto</button>
-        <button class="type-btn" id="ft-tfr" onclick="setFinType('transfer')">⇄ Transf.</button>
       </div>
       <div class="row" style="margin-bottom:8px">
         <div class="cat-icon-btn" id="fin-cat-btn" onclick="openCatModal()"><span id="fin-cat-icon">💰</span></div>
@@ -847,15 +845,11 @@ function showCalDay(str){
     </div>`;
 }
 function selHabitNewTime(t,btn){
-  newHabitTime=t;
-  ['morning','afternoon','night'].forEach(x=>{
-    const b=$('ht-'+x);
-    b.style.background='';b.style.borderColor='';b.style.color='';
-  });
   const colors={morning:'var(--amber)',afternoon:'var(--orange)',night:'var(--purple)'};
-  btn.style.background='var(--s2)';
-  btn.style.borderColor=colors[t];
-  btn.style.color=colors[t];
+  const resetAll=()=>['morning','afternoon','night'].forEach(x=>{const b=$('ht-'+x);b.style.background='';b.style.borderColor='';b.style.color='';});
+  if(newHabitTime===t){newHabitTime=null;resetAll();return;}
+  newHabitTime=t;resetAll();
+  btn.style.background='var(--s2)';btn.style.borderColor=colors[t];btn.style.color=colors[t];
 }
 function addHabit(){
   const v=$('habit-inp').value.trim();if(!v)return;
@@ -1022,8 +1016,8 @@ function renderWorkout(){
 let finType='income',finCat='💰',finView='txs';
 function setFinType(t){
   finType=t;
-  ['inc','exp','tfr'].forEach(x=>$('ft-'+x).className='type-btn');
-  $('ft-'+(t==='income'?'inc':t==='expense'?'exp':'tfr')).className='type-btn '+(t==='income'?'inc':t==='expense'?'exp':'tfr');
+  ['inc','exp'].forEach(x=>$('ft-'+x).className='type-btn');
+  $('ft-'+(t==='income'?'inc':'exp')).className='type-btn '+(t==='income'?'inc':'exp');
 }
 function openCatModal(){
   $('cat-grid').innerHTML=CATS.map(c=>`<div class="cat-opt${c===finCat?' sel':''}" onclick="pickCat('${c}')">${c}</div>`).join('');
@@ -1058,17 +1052,16 @@ function renderFinance(){
   const txs=S.transactions.filter(x=>{const d=new Date(x.date+'T12:00:00');return d.getMonth()===mn.getMonth()&&d.getFullYear()===mn.getFullYear();});
   const inc=txs.filter(x=>x.type==='income').reduce((a,b)=>a+b.amount,0);
   const exp=txs.filter(x=>x.type==='expense').reduce((a,b)=>a+b.amount,0);
-  const tfr=txs.filter(x=>x.type==='transfer').reduce((a,b)=>a+b.amount,0);
   const bal=inc-exp;
   $('fin-bal').textContent=fmt(bal);$('fin-bal').className='fin-bal'+(bal<0?' neg':'');
-  $('fin-inc').textContent=fmt(inc);$('fin-exp').textContent=fmt(exp);$('fin-tfr').textContent=fmt(tfr);
+  $('fin-inc').textContent=fmt(inc);$('fin-exp').textContent=fmt(exp);
   if(finView==='txs'){
     if(!S.transactions.length){$('tx-list').innerHTML=`<div class="empty"><p>Registrá tu primer movimiento</p></div>`;return;}
     $('tx-list').innerHTML=S.transactions.slice(0,30).map(t=>`
       <div class="tx-item">
         <div class="tx-ico">${t.cat}</div>
         <div class="tx-info"><div class="tx-desc">${t.desc}</div><div class="tx-dt">${t.date}</div></div>
-        <div class="tx-amt" style="color:${t.type==='income'?'var(--green)':t.type==='expense'?'var(--red)':'var(--blue)'}">${t.type==='income'?'+':t.type==='expense'?'-':'⇄'}${fmt(t.amount)}</div>
+        <div class="tx-amt" style="color:${t.type==='income'?'var(--green)':'var(--red)'}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
         <button class="del-btn" onclick="delTx(${t.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
       </div>`).join('');
   }else{
