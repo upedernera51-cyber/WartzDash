@@ -880,20 +880,15 @@ function calcStreak(log,skips=[]){
   return s;
 }
 function buildHeatmap(log,skips){
-  // 10 weeks x 7 days
-  const weeks=10;const cells=[];
-  for(let w=weeks-1;w>=0;w--){
-    const col=[];
-    for(let d=6;d>=0;d--){
-      const dt=new Date();dt.setDate(dt.getDate()-(w*7+d));
-      const str=dt.toISOString().split('T')[0];
-      const isToday=str===today();
-      const done=log.includes(str);const skip=skips.includes(str);
-      // count consecutive completions ending at this day for intensity
-      const intensity=done?Math.min(4,1+(log.filter(l=>l<=str&&l>=(new Date(dt.getTime()-3*86400000)).toISOString().split('T')[0]).length)):0;
-      col.push(`<div class="hm-cell${done?' d'+intensity:''}${skip?' d1':''} ${isToday?'today':''}" title="${str}"></div>`);
-    }
-    cells.push(`<div class="hm-col">${col.join('')}</div>`);
+  // compact last 7 days streak view
+  const days=7;const cells=[];
+  for(let i=days-1;i>=0;i--){
+    const dt=new Date();dt.setDate(dt.getDate()-i);
+    const str=dt.toISOString().split('T')[0];
+    const isToday=str===today();
+    const done=log.includes(str);const skip=skips.includes(str);
+    const consecutive=done?Math.min(4,1+(log.filter(l=>l<=str&&l>=(new Date(dt.getTime()-3*86400000)).toISOString().split('T')[0]).length)):0;
+    cells.push(`<div class="hm-cell${done?' d'+consecutive:''}${skip?' d1':''} ${isToday?'today':''}" title="${str}"></div>`);
   }
   return`<div class="heatmap">${cells.join('')}</div>`;
 }
