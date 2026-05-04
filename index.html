@@ -48,6 +48,16 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .more-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .more-btn{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all .15s}
 .more-btn:active{transform:scale(.94);background:var(--border)}
+
+/* CATEGORY MODAL */
+.cat-modal{position:absolute;bottom:0;left:0;right:0;background:var(--s1);border-radius:18px 18px 0 0;border-top:1px solid var(--border);padding:16px 16px calc(16px + var(--sb));z-index:60;transform:translateY(100%);transition:transform .26s ease}
+.cat-modal.open{transform:none}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(50px,1fr));gap:8px;max-height:200px;overflow-y:auto}
+.cat-grid-m{display:grid;grid-template-columns:repeat(auto-fit,minmax(45px,1fr));gap:6px;max-height:250px;overflow-y:auto}
+.cat-opt{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-size:11px;text-align:center}
+.cat-opt:hover{background:var(--hover)}
+.cat-opt.sel{background:var(--green);color:white;border-color:var(--green)}
+.cat-opt span{font-size:18px}
 .more-btn .ico{font-size:24px}
 .more-btn .lbl{font-size:12px;font-weight:500;color:var(--t2)}
 .more-btn.on .lbl{color:var(--green)}
