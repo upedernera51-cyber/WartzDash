@@ -214,6 +214,14 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .budget-bar{margin-top:8px}
 .budget-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--t2);margin-bottom:4px}
 
+/* PIE CHART */
+.pie-slice{stroke:var(--s1);stroke-width:2;fill:none}
+.pie-center{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--t2)}
+.chart-legend-item{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px}
+.chart-legend-color{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.chart-legend-text{flex:1}
+.chart-legend-value{font-weight:600}
+
 /* ── STUDY ── */
 .subject-card{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
 .subject-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px}
@@ -446,9 +454,17 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
       </div>
       <div class="toggle-row">
         <button class="tgl on" onclick="setFinView('txs',this)">Movimientos</button>
+        <button class="tgl" onclick="setFinView('chart',this)">Gráfico</button>
         <button class="tgl" onclick="setFinView('budget',this)">Presupuesto</button>
       </div>
       <div id="fv-txs"><div id="tx-list"></div></div>
+      <div id="fv-chart" style="display:none">
+        <div class="card" style="text-align:center">
+          <div style="font-size:16px;font-weight:600;color:var(--red);margin-bottom:16px">📊 Gastos por Categoría</div>
+          <div id="pie-chart-container" style="position:relative;margin:0 auto;width:200px;height:200px"></div>
+          <div id="chart-legend" style="margin-top:16px"></div>
+        </div>
+      </div>
       <div id="fv-budget" style="display:none">
         <div id="budget-list"></div>
         <div class="sl">Nuevo presupuesto</div>
@@ -1058,6 +1074,7 @@ function setFinView(v,btn){
   document.querySelectorAll('#s-finance .toggle-row .tgl').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   $('fv-txs').style.display=v==='txs'?'block':'none';
+  $('fv-chart').style.display=v==='chart'?'block':'none';
   $('fv-budget').style.display=v==='budget'?'block':'none';
   renderFinance();
 }
@@ -1078,7 +1095,7 @@ function renderFinance(){
         <div class="tx-amt" style="color:${t.type==='income'?'var(--green)':'var(--red)'}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
         <button class="del-btn" onclick="delTx(${t.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
       </div>`).join('');
-  }else{
+  }else if(finView==='budget'){
     const el=$('budget-list');
     if(!S.budgets.length){el.innerHTML=`<div class="empty"><p>Agregá un presupuesto por categoría</p></div>`;return;}
     el.innerHTML=S.budgets.map(b=>{
@@ -1095,7 +1112,69 @@ function renderFinance(){
         <div style="font-size:11px;color:${color};margin-top:4px;text-align:right">${pct}% usado</div>
       </div>`;
     }).join('');
+  }else if(finView==='chart'){
   }
+}
+
+// ════════════════════════════════════
+//  PIE CHART
+// ════════════════════════════════════
+function renderPieChart(){
+  const mn=new Date();
+  const txs=S.transactions.filter(x=>{const d=new Date(x.date+'T12:00:00');return d.getMonth()===mn.getMonth()&&d.getFullYear()===mn.getFullYear();});
+  const expenses=txs.filter(x=>x.type==='expense');
+
+  if(!expenses.length){
+    $('pie-chart-container').innerHTML='<div style="color:var(--t3);font-size:14px;text-align:center;padding:40px">Sin gastos este mes</div>';
+    $('chart-legend').innerHTML='';
+    return;
+  }
+
+  // Agrupar por categoría
+  const categories={};
+  expenses.forEach(tx=>{
+    if(!categories[tx.cat])categories[tx.cat]={amount:0,desc:tx.desc};
+    categories[tx.cat].amount+=tx.amount;
+  });
+
+  const total=expenses.reduce((a,b)=>a+b.amount,0);
+  const data=Object.entries(categories).map(([cat,{amount,desc}])=>({
+    cat,amount,pct:Math.round(amount/total*100),desc
+  })).sort((a,b)=>b.amount-a.amount);
+
+  // Colores para el gráfico
+  const colors=['#EF4444','#F59E0B','#60A5FA','#A78BFA','#F472B6','#2DD4BF','#FB923C','#22C55E','#8B5CF6','#EC4899'];
+
+  // Renderizar gráfico SVG
+  let cumulativePct=0;
+  const svg=`<svg width="200" height="200" viewBox="0 0 200 200">
+    ${data.map((item,i)=>{
+      const startAngle=(cumulativePct/100)*360-90;
+      const endAngle=((cumulativePct+item.pct)/100)*360-90;
+      const largeArc=item.pct>50?1:0;
+      const x1=100+80*Math.cos(startAngle*Math.PI/180);
+      const y1=100+80*Math.sin(startAngle*Math.PI/180);
+      const x2=100+80*Math.cos(endAngle*Math.PI/180);
+      const y2=100+80*Math.sin(endAngle*Math.PI/180);
+      const path=`M100,100 L${x1},${y1} A80,80 0 ${largeArc},1 ${x2},${y2} Z`;
+      cumulativePct+=item.pct;
+      return `<path d="${path}" fill="${colors[i%colors.length]}" class="pie-slice"></path>`;
+    }).join('')}
+    <circle cx="100" cy="100" r="40" fill="var(--s1)" stroke="var(--border)" stroke-width="1"/>
+    <text x="100" y="95" class="pie-center" text-anchor="middle">${data.length}</text>
+    <text x="100" y="110" class="pie-center" text-anchor="middle" style="font-size:11px">Categorías</text>
+  </svg>`;
+
+  $('pie-chart-container').innerHTML=svg;
+
+  // Renderizar leyenda
+  $('chart-legend').innerHTML=data.map((item,i)=>`
+    <div class="chart-legend-item">
+      <div class="chart-legend-color" style="background:${colors[i%colors.length]}"></div>
+      <div class="chart-legend-text">${item.cat} ${item.desc?'('+item.desc.split(' ')[0]+')':''}</div>
+      <div class="chart-legend-value">${item.pct}%</div>
+    </div>
+  `).join('');
 }
 
 // ════════════════════════════════════
