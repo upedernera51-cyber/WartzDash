@@ -439,7 +439,9 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
       <div class="row" style="margin-bottom:8px">
         <div class="cat-icon-btn" id="fin-cat-btn" onclick="openCatModal()"><span id="fin-cat-icon">💰</span></div>
         <input class="inp" id="fin-desc" placeholder="Descripción…" onkeydown="if(event.key==='Enter')addTx()">
-        <input class="inp" id="fin-amt" type="number" placeholder="$0" style="width:80px;flex:none" onkeydown="if(event.key==='Enter')addTx()">
+      </div>
+      <div class="row" style="margin-bottom:8px">
+        <input class="inp" id="fin-amt" type="number" placeholder="Monto: $0" onkeydown="if(event.key==='Enter')addTx()">
         <button class="plus-btn" onclick="addTx()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
       </div>
       <div class="toggle-row">
