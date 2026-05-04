@@ -360,11 +360,15 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
         <button class="tgl" onclick="setHabitTime('night',this)">🌙 Noche</button>
         <button class="tgl" onclick="setHabitTime('calendar',this)">📅 Cal.</button>
       </div>
-      <div id="habit-add-form">
-      <div class="row" style="margin-bottom:14px">
-        <input class="inp" id="habit-inp" placeholder="Nuevo hábito…">
-        <button class="plus-btn" onclick="addHabit()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-      </div>
+<div id="habit-add-form" class="card" style="margin-bottom:16px">
+  <div class="row" style="margin-bottom:0">
+    <!-- Botón para elegir emoji -->
+    <button class="cat-btn" onclick="openHabitCatModal()" id="habit-cat-icon" style="margin-right:8px">🌱</button>
+    <input class="inp" id="habit-inp" placeholder="Nuevo hábito..." onkeydown="if(event.key==='Enter')addHabit()">
+    <button class="plus-btn" onclick="addHabit()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+  </div>
+  <!-- ... el resto de los botones de tiempo (morning, etc) se mantienen igual ... -->
+</div>
       <div class="prio-bar" style="margin-bottom:12px">
         <button class="pc" id="ht-morning" onclick="selHabitNewTime('morning',this)" style="background:var(--s2);border-color:var(--amber);color:var(--amber)">🌅 Mañana</button>
         <button class="pc" id="ht-afternoon" onclick="selHabitNewTime('afternoon',this)">☀️ Tarde</button>
@@ -373,7 +377,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
       </div>
       <div id="habit-list"></div>
       <div id="habit-calendar" style="display:none"></div>
-    </div>
+    
 
     <!-- WORKOUT -->
     <div class="screen" id="s-workout">
@@ -422,19 +426,12 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
     </div>
 
     <!-- FINANCE -->
-    <div class="screen" id="s-finance">
-      <div class="fin-hero">
-        <div class="bal-lbl" style="text-align:center">Balance del mes</div>
-        <div class="fin-bal" id="fin-bal">$0,00</div>
-        <div class="bal-sub" style="border-top:1px solid #1B3823;padding-top:12px;margin-top:12px">
-          <div class="bsi"><div class="v" style="color:var(--green)" id="fin-inc">$0</div><div class="l">Ingresos</div></div>
-          <div class="bsi" style="border-left:1px solid #1B3823"><div class="v" style="color:var(--red)" id="fin-exp">$0</div><div class="l">Gastos</div></div>
-        </div>
-      </div>
-      <div class="type-row">
-        <button class="type-btn inc" id="ft-inc" onclick="setFinType('income')">+ Ingreso</button>
-        <button class="type-btn" id="ft-exp" onclick="setFinType('expense')">− Gasto</button>
-      </div>
+<div class="card" style="margin-bottom:16px">
+  <div class="row" style="margin-bottom:10px">
+    <button class="cat-btn" onclick="openCatModal()" id="fin-cat-icon">💰</button>
+    <input class="inp" id="fin-desc" placeholder="Descripción..." style="flex:2">
+  </div>
+</div>
       <div class="row" style="margin-bottom:8px">
         <div class="cat-icon-btn" id="fin-cat-btn" onclick="openCatModal()"><span id="fin-cat-icon">💰</span></div>
         <input class="inp" id="fin-desc" placeholder="Descripción…">
@@ -749,13 +746,23 @@ function renderTaskList(){
     </div>`;
   }).join('');
 }
-function renderKanban(){
-  const cols={todo:S.tasks.filter(t=>!t.done),done:S.tasks.filter(t=>t.done)};
-  const inprog=S.tasks.filter(t=>!t.done&&(t.subtasks||[]).some(s=>s.done));
-  $('kanban-wrap').innerHTML=`
-    <div class="k-col"><div class="k-col-title" style="color:var(--blue)">📋 Por hacer (${S.tasks.filter(t=>!t.done).length})</div>${S.tasks.filter(t=>!t.done).map(t=>`<div class="k-task" onclick=""><span style="color:${PRIO_META[t.prio].color}">●</span> ${t.text}</div>`).join('')}</div>
-    <div class="k-col"><div class="k-col-title" style="color:var(--amber)">⚡ En progreso (${inprog.length})</div>${inprog.map(t=>`<div class="k-task">${t.text}</div>`).join('')}</div>
-    <div class="k-col"><div class="k-col-title" style="color:var(--green)">✅ Hecho (${S.tasks.filter(t=>t.done).length})</div>${S.tasks.filter(t=>t.done).map(t=>`<div class="k-task" style="opacity:.5">${t.text}</div>`).join('')}</div>`;
+function renderKanban() {
+  const todo = S.tasks.filter(t => !t.done);
+  const done = S.tasks.filter(t => t.done);
+
+  $('kanban-wrap').innerHTML = `
+    <div class="k-col">
+      <div class="k-col-title" style="color:var(--blue)">📋 POR HACER (${todo.length})</div>
+      ${todo.map(t => `<div class="k-task"><span style="color:${PRIO_META[t.prio].color}">●</span> ${t.text}</div>`).join('')}
+    </div>
+    <div class="k-col">
+      <div class="k-col-title" style="color:var(--green)">✅ HECHO (${done.length})</div>
+      ${done.map(t => `<div class="k-task" style="opacity:.5">${t.text}</div>`).join('')}
+    </div>`;
+    
+  // Ajuste visual: Cambiamos el grid para que sea de 2 columnas
+  $('kanban-wrap').style.display = 'grid';
+  $('kanban-wrap').style.gridTemplateColumns = '1fr 1fr';
 }
 function renderWeek(){
   const days=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -852,11 +859,44 @@ function selHabitNewTime(t,btn){
   newHabitTime=t;resetAll();
   btn.style.background='var(--s2)';btn.style.borderColor=colors[t];btn.style.color=colors[t];
 }
-function addHabit(){
-  const v=$('habit-inp').value.trim();if(!v)return;
-  const emojis=['💧','🏃','📖','🧘','💪','🥗','😴','✍️','🎯','🌱'];
-  S.habits.unshift({id:Date.now(),name:v,emoji:emojis[Math.floor(Math.random()*emojis.length)],log:[],skips:[],streak:0,time:newHabitTime});
-  $('habit-inp').value='';save();renderHabits();renderHome();
+let habitEmoji = '🌱'; // Variable global nueva
+
+function openHabitCatModal() {
+  $('cat-grid').innerHTML = CATS.map(c => `<div class="cat-opt${c === habitEmoji ? ' sel' : ''}" onclick="pickHabitCat('${c}')">${c}</div>`).join('');
+  $('cat-modal').classList.add('open');
+  $('cat-overlay').classList.add('show');
+}
+
+function pickHabitCat(c) {
+  habitEmoji = c;
+  $('habit-cat-icon').textContent = c;
+  closeCatModal(); // Añadí esto para que no quede el modal abierto
+}
+
+
+// Actualiza tu función addHabit existente:
+function addHabit() {
+  const v = $('habit-inp').value.trim(); 
+  if (!v) return;
+  
+  S.habits.unshift({
+    id: Date.now(),
+    name: v,
+    emoji: habitEmoji, // Usa el emoji seleccionado
+    log: [],
+    skips: [],
+    streak: 0,
+    time: newHabitTime
+  });
+  
+  $('habit-inp').value = '';
+  // Opcional: resetear el emoji al default después de añadir
+  habitEmoji = '🌱'; 
+  $('habit-cat-icon').textContent = '🌱';
+  
+  save(); 
+  renderHabits(); 
+  renderHome();
 }
 function toggleHabit(id){
   const h=S.habits.find(x=>x.id===id);if(!h)return;
