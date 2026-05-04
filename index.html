@@ -16,6 +16,7 @@
   --amber:#F59E0B;--red:#EF4444;--blue:#60A5FA;--purple:#A78BFA;--pink:#F472B6;--teal:#2DD4BF;--orange:#FB923C;
   --txt:#E4F0E6;--t2:#6B9B70;--t3:#2E4A32;
   --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+  --hover:#1E3025;
 }
 html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
 #app{display:flex;flex-direction:column;height:100svh;max-width:430px;margin:0 auto;position:relative;overflow:hidden}
@@ -231,6 +232,26 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .focus-badge{display:inline-flex;align-items:center;gap:6px;background:#EF444418;border:1px solid var(--red);border-radius:99px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--red);margin-bottom:12px}
 .focus-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── CAT ICON BTN ── */
+.cat-icon-btn{width:44px;height:44px;background:var(--s1);border:1px solid var(--border);border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:22px;transition:all .14s}
+.cat-icon-btn:active{transform:scale(.9);background:var(--border)}
+
+/* ── TOAST ── */
+.toast{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:10px 20px;font-size:14px;color:var(--txt);z-index:200;white-space:nowrap;pointer-events:none;animation:up .2s ease;box-shadow:0 4px 20px #0006}
+
+/* ── FINANCE ── */
+.fin-type-row{display:flex;gap:6px;margin-bottom:10px}
+.ft-btn{flex:1;padding:9px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .14s}
+.ft-btn.income.on{border-color:var(--green);background:#22C55E20;color:var(--green)}
+.ft-btn.expense.on{border-color:var(--red);background:#EF444420;color:var(--red)}
+.tx-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.tx-item:last-child{border:none}
+.tx-cat{font-size:20px;width:36px;height:36px;background:var(--s1);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tx-body{flex:1;min-width:0}
+.tx-desc{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tx-date{font-size:11px;color:var(--t2);margin-top:1px}
+.tx-amount{font-size:15px;font-weight:700;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -302,7 +323,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
             <button class="plus-btn" onclick="addTask()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
           </div>
           <div class="prio-bar" id="new-task-prio">
-            <button class="pc p1 sel-prio" onclick="selNewPrio('p1',this)">🔴 Urgente</button>
+            <button class="pc p1 sel-prio" id="nprio-p1" onclick="selNewPrio('p1',this)">🔴 Urgente</button>
             <button class="pc" id="nprio-p2" onclick="selNewPrio('p2',this)">🟠 Alta</button>
             <button class="pc" id="nprio-p3" onclick="selNewPrio('p3',this)">🔵 Normal</button>
             <button class="pc" id="nprio-p4" onclick="selNewPrio('p4',this)">⚪ Baja</button>
@@ -448,6 +469,52 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
       </div>
     </div>
 
+    <!-- FINANCE -->
+    <div class="screen" id="s-finance">
+      <div class="toggle-row">
+        <button class="tgl on" onclick="setFinanceView('overview',this)">Resumen</button>
+        <button class="tgl" onclick="setFinanceView('history',this)">Historial</button>
+      </div>
+      <div id="fv-overview">
+        <div class="mini-grid" style="margin-bottom:12px">
+          <div class="mini-card" style="grid-column:span 2">
+            <div class="mini-ico">💰</div>
+            <div class="mini-num" id="f-balance" style="color:var(--green)">$0</div>
+            <div class="mini-lbl">Balance del mes</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-ico">📈</div>
+            <div style="font-size:18px;font-weight:700;letter-spacing:-.5px;color:var(--green)" id="f-income">$0</div>
+            <div class="mini-lbl">Ingresos</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-ico">📉</div>
+            <div style="font-size:18px;font-weight:700;letter-spacing:-.5px;color:var(--red)" id="f-expenses">$0</div>
+            <div class="mini-lbl">Gastos</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="fin-type-row">
+            <button class="ft-btn income on" id="ft-income" onclick="selFinanceType('income',this)">+ Ingreso</button>
+            <button class="ft-btn expense" id="ft-expense" onclick="selFinanceType('expense',this)">− Gasto</button>
+          </div>
+          <div class="row" style="margin-bottom:8px">
+            <input class="inp" id="f-amount" type="number" inputmode="decimal" placeholder="Monto…" style="width:110px;flex:0 0 auto">
+            <input class="inp" id="f-desc" placeholder="Descripción…" onkeydown="if(event.key==='Enter')addTransaction()">
+          </div>
+          <div class="row">
+            <div class="cat-icon-btn" id="f-cat-btn" onclick="openCatModal()"><span id="f-cat-icon">🛒</span></div>
+            <button class="plus-btn" style="flex:1;border-radius:11px;width:auto" onclick="addTransaction()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          </div>
+        </div>
+        <div class="sl">Transacciones del mes</div>
+        <div class="card" id="f-tx-list"><div style="color:var(--t3);font-size:14px;text-align:center;padding:8px">Sin transacciones este mes</div></div>
+      </div>
+      <div id="fv-history" style="display:none">
+        <div id="f-history-list"></div>
+      </div>
+    </div>
+
   </div><!-- end scroll -->
 
   <!-- BOTTOM NAV -->
@@ -474,7 +541,10 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
   <div class="sheet-overlay" id="sheet-overlay" onclick="closeMore()"></div>
   <div class="more-sheet" id="more-sheet">
     <div class="sheet-handle"></div>
-    <div class="more-grid" style="grid-template-columns:1fr 1fr">
+    <div class="more-grid" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="more-btn" id="mb-finance" onclick="goToMore('finance',this)">
+        <div class="ico">💰</div><div class="lbl">Finanzas</div>
+      </div>
       <div class="more-btn" id="mb-study" onclick="goToMore('study',this)">
         <div class="ico">📚</div><div class="lbl">Estudios</div>
       </div>
@@ -601,7 +671,7 @@ function renderHome(){
 let taskView='list',prioFilter='all',newPrio='p1',expandedTask=null;
 function setTaskView(v,btn){
   taskView=v;
-  document.querySelectorAll('.toggle-row .tgl').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#s-tasks .toggle-row .tgl').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   $('tv-list').style.display=v==='list'?'block':'none';
   $('tv-kanban').style.display=v==='kanban'?'block':'none';
@@ -916,7 +986,7 @@ function finishSession(){
   curExercises=[];$('cardio-dist').value='';$('cardio-time').value='';
   $('session-timer').textContent='00:00';$('sess-btn').textContent='▶ Iniciar';$('sess-btn').style.background='var(--orange)';
   renderExercises();
-  alert('¡Sesión guardada! 💪');
+  toast('¡Sesión guardada! 💪');
 }
 function renderWorkout(){
   if(wkView==='templates'){
@@ -1058,7 +1128,7 @@ function togglePomo(){
           S.pomoCount++;save();renderHome();
           $('pomo-count').textContent=S.pomoCount;
         }
-        setTimeout(()=>alert(pomoMode==='work'?'🎉 ¡Pomodoro completo! Tomá un descanso.':'✅ ¡Descanso terminado! A trabajar.'),100);
+        toast(pomoMode==='work'?'🎉 ¡Pomodoro completo! Tomá un descanso.':'✅ ¡Descanso terminado! A trabajar.');
         pomoSecsLeft=POMO_MODES[pomoMode].mins*60;
         updatePomoDisplay();return;
       }
@@ -1087,9 +1157,113 @@ function renderFocus(){
 }
 
 // ════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════
+function toast(msg){
+  const el=document.createElement('div');
+  el.className='toast';el.textContent=msg;
+  $('app').appendChild(el);
+  setTimeout(()=>el.remove(),2400);
+}
+
+// ════════════════════════════════════
+//  CAT MODAL (Finanzas)
+// ════════════════════════════════════
+let financeCat='🛒';
+function openCatModal(){
+  $('cat-grid').innerHTML=CATS.map(c=>`<div class="cat-opt${c===financeCat?' sel':''}" onclick="pickCat('${c}')"><span>${c}</span></div>`).join('');
+  $('cat-modal').classList.add('open');
+  $('cat-overlay').classList.add('show');
+}
+function closeCatModal(){
+  $('cat-modal').classList.remove('open');
+  $('cat-overlay').classList.remove('show');
+}
+function pickCat(c){
+  financeCat=c;
+  $('f-cat-icon').textContent=c;
+  closeCatModal();
+}
+
+// ════════════════════════════════════
+//  FINANCE
+// ════════════════════════════════════
+let financeView='overview',financeType='income';
+function selFinanceType(t,btn){
+  financeType=t;
+  $('ft-income').classList.toggle('on',t==='income');
+  $('ft-expense').classList.toggle('on',t==='expense');
+}
+function setFinanceView(v,btn){
+  financeView=v;
+  document.querySelectorAll('#s-finance .toggle-row .tgl').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  $('fv-overview').style.display=v==='overview'?'block':'none';
+  $('fv-history').style.display=v==='history'?'block':'none';
+  renderFinance();
+}
+function addTransaction(){
+  const amount=parseFloat($('f-amount').value);
+  const desc=$('f-desc').value.trim();
+  if(!amount||!desc)return;
+  S.transactions.push({id:Date.now(),date:today(),type:financeType,amount,desc,cat:financeCat});
+  $('f-amount').value='';$('f-desc').value='';
+  save();renderFinance();
+  toast(financeType==='income'?'💰 Ingreso agregado':'💸 Gasto registrado');
+}
+function renderFinance(){
+  const ym=today().slice(0,7);
+  const monthTx=S.transactions.filter(x=>x.date.startsWith(ym));
+  const income=monthTx.filter(x=>x.type==='income').reduce((a,x)=>a+x.amount,0);
+  const expenses=monthTx.filter(x=>x.type==='expense').reduce((a,x)=>a+x.amount,0);
+  const balance=income-expenses;
+  if($('f-balance')){
+    $('f-balance').textContent=fmts(balance);
+    $('f-balance').style.color=balance>=0?'var(--green)':'var(--red)';
+    $('f-income').textContent=fmts(income);
+    $('f-expenses').textContent=fmts(expenses);
+  }
+  if(financeView==='overview'){
+    const el=$('f-tx-list');
+    if(!monthTx.length){el.innerHTML=`<div style="color:var(--t3);font-size:14px;text-align:center;padding:8px">Sin transacciones este mes</div>`;return;}
+    el.innerHTML=monthTx.slice().reverse().map(tx=>`
+      <div class="tx-item">
+        <div class="tx-cat">${tx.cat}</div>
+        <div class="tx-body">
+          <div class="tx-desc">${tx.desc}</div>
+          <div class="tx-date">${tx.date}</div>
+        </div>
+        <div class="tx-amount" style="color:${tx.type==='income'?'var(--green)':'var(--red)'}">${tx.type==='income'?'+':'-'}${fmts(tx.amount)}</div>
+        <button class="del-btn" onclick="S.transactions=S.transactions.filter(x=>x.id!==${tx.id});save();renderFinance()"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+      </div>`).join('');
+  }else{
+    const months=Array.from({length:6},(_,i)=>{const d=new Date();d.setMonth(d.getMonth()-i);return d.toISOString().slice(0,7);});
+    const el=$('f-history-list');
+    const rows=months.map(m=>{
+      const txs=S.transactions.filter(x=>x.date.startsWith(m));
+      if(!txs.length)return'';
+      const inc=txs.filter(x=>x.type==='income').reduce((a,x)=>a+x.amount,0);
+      const exp=txs.filter(x=>x.type==='expense').reduce((a,x)=>a+x.amount,0);
+      const bal=inc-exp;
+      const label=new Date(m+'-15').toLocaleDateString('es',{month:'long',year:'numeric'});
+      return`<div class="card" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-size:14px;font-weight:600;text-transform:capitalize">${label}</div>
+          <div style="font-size:16px;font-weight:700;color:${bal>=0?'var(--green)':'var(--red)'}">${fmts(bal)}</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2)">
+          <span>📈 ${fmts(inc)}</span><span>📉 ${fmts(exp)}</span><span>${txs.length} mov.</span>
+        </div>
+      </div>`;
+    }).join('');
+    el.innerHTML=rows||`<div class="empty"><p>Sin historial aún</p></div>`;
+  }
+}
+
+// ════════════════════════════════════
 //  ROUTER
 // ════════════════════════════════════
-const renders={home:renderHome,tasks:renderTasks,habits:renderHabits,workout:renderWorkout,study:renderStudy,focus:renderFocus};
+const renders={home:renderHome,tasks:renderTasks,habits:renderHabits,workout:renderWorkout,study:renderStudy,focus:renderFocus,finance:renderFinance};
 renderHome();
 updatePomoDisplay();
 </script>
