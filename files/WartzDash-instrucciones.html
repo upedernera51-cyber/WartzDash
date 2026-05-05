@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WartzDash — Guía de instalación</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#0A0F0D;color:#E8F5EA;max-width:680px;margin:0 auto;padding:32px 24px 60px;line-height:1.7}
+h1{font-size:32px;font-weight:700;letter-spacing:-1px;margin-bottom:4px}
+h1 span{color:#22C55E}
+.sub{color:#7A9E7E;font-size:15px;margin-bottom:40px}
+h2{font-size:18px;font-weight:600;margin:36px 0 14px;color:#E8F5EA;border-bottom:1px solid #1E2E22;padding-bottom:8px}
+h3{font-size:15px;font-weight:600;color:#22C55E;margin:20px 0 8px}
+p,li{font-size:15px;color:#BDD8BE;margin-bottom:8px}
+ul,ol{padding-left:20px;margin-bottom:16px}
+li{margin-bottom:6px}
+.step-grid{display:grid;gap:12px;margin:16px 0}
+.step{background:#111A15;border:1px solid #1E2E22;border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
+.step-num{background:#22C55E;color:#000;font-weight:700;font-size:13px;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-content .title{font-weight:600;font-size:15px;color:#E8F5EA;margin-bottom:4px}
+.step-content .desc{font-size:14px;color:#7A9E7E;line-height:1.5}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.feat{background:#111A15;border:1px solid #1E2E22;border-radius:12px;padding:14px}
+.feat-icon{font-size:22px;margin-bottom:8px}
+.feat-title{font-size:14px;font-weight:600;color:#E8F5EA;margin-bottom:4px}
+.feat-desc{font-size:13px;color:#7A9E7E;line-height:1.45}
+.note{background:#162018;border:1px solid #22C55E30;border-left:3px solid #22C55E;border-radius:0 10px 10px 0;padding:12px 16px;margin:16px 0;font-size:14px;color:#7A9E7E}
+.note strong{color:#22C55E}
+code{background:#162018;color:#22C55E;padding:2px 8px;border-radius:6px;font-size:13px;font-family:'Courier New',monospace}
+@media(max-width:480px){.feature-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<h1><span>WartzDash</span> App</h1>
+<div class="sub">Guía de funcionalidades e instalación en iPhone</div>
+
+<h2>¿Qué es WartzDash?</h2>
+<p>WartzDash es una app de organización personal todo-en-uno que combina gestión de tareas, seguimiento de hábitos y control de finanzas personales. Está diseñada como una PWA (Progressive Web App) que funciona directamente desde el navegador y puede instalarse en la pantalla de inicio de tu iPhone como si fuera una app nativa.</p>
+
+<h2>Funcionalidades</h2>
+<div class="feature-grid">
+  <div class="feat">
+    <div class="feat-icon">🏠</div>
+    <div class="feat-title">Dashboard</div>
+    <div class="feat-desc">Vista general con balance financiero, tareas pendientes, racha de hábitos y resumen del día.</div>
+  </div>
+  <div class="feat">
+    <div class="feat-icon">✅</div>
+    <div class="feat-title">Gestión de tareas</div>
+    <div class="feat-desc">Creá tareas con prioridad Alta, Media o Baja. Filtrá, completá y eliminá con un toque.</div>
+  </div>
+  <div class="feat">
+    <div class="feat-icon">🔥</div>
+    <div class="feat-title">Seguimiento de hábitos</div>
+    <div class="feat-desc">Agregá hábitos con emojis personalizados. Marcá como hecho cada día y visualizá tu racha de 7 días.</div>
+  </div>
+  <div class="feat">
+    <div class="feat-icon">💰</div>
+    <div class="feat-title">Finanzas personales</div>
+    <div class="feat-desc">Registrá ingresos y gastos con categorías. Resumen mensual con balance, y historial de 6 meses.</div>
+  </div>
+</div>
+
+<h3>Tareas</h3>
+<ul>
+  <li>Crear tareas con <strong>prioridad Alta, Media o Baja</strong></li>
+  <li>Filtrar por estado: todas, pendientes, completadas, solo alta prioridad</li>
+  <li>Marcar como completada tocando el círculo o el texto</li>
+  <li>Eliminar con el ícono de tacho</li>
+</ul>
+
+<h3>Hábitos</h3>
+<ul>
+  <li>Elegir un emoji representativo entre 12 opciones (💧🏃📖🧘 etc.)</li>
+  <li>Ver los últimos 7 días con puntitos de colores</li>
+  <li>Racha automática (días consecutivos)</li>
+  <li>El botón verde en el dashboard marca el hábito de hoy sin entrar a la sección</li>
+</ul>
+
+<h3>Finanzas</h3>
+<ul>
+  <li>Registrar <strong>ingresos y gastos</strong> con descripción, monto y categoría emoji</li>
+  <li>20 categorías disponibles: 🍕🚗🏠💊🎮📚☕✈️ etc.</li>
+  <li>Balance del mes en tiempo real</li>
+  <li>Historial de los últimos 6 meses con mini-gráfico de balance</li>
+  <li>Porcentaje de ahorro calculado automáticamente</li>
+</ul>
+
+<h3>Datos</h3>
+<ul>
+  <li>Todo se guarda localmente en el teléfono (no necesita internet ni registro)</li>
+  <li>Los datos persisten entre sesiones gracias a <code>localStorage</code></li>
+</ul>
+
+<h2>Cómo instalar en iPhone</h2>
+
+<div class="note"><strong>Requisito:</strong> Necesitás el archivo <code>wartzdash-app.html</code> accesible desde Safari. Lo más fácil es subirlo a un servicio gratuito como GitHub Pages, Netlify Drop o similar.</div>
+
+<h3>Opción A — Subir a Netlify Drop (más fácil, gratis)</h3>
+<div class="step-grid">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="title">Ir a netlify.com/drop</div><div class="desc">Abrí netlify.com/drop en tu computadora (o en el iPhone directamente).</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="title">Arrastrar el archivo</div><div class="desc">Arrastrá el archivo <code>wartzdash-app.html</code> a la zona de drop. Netlify te da una URL pública inmediatamente.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="title">Abrir la URL en Safari (iPhone)</div><div class="desc">Copiá la URL que te dio Netlify y abrila en Safari en tu iPhone.</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="title">Agregar a pantalla de inicio</div><div class="desc">Tocá el ícono de compartir (cuadrado con flecha ↑) → desplazá hacia abajo → "Agregar a pantalla de inicio" → "Agregar".</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="title">¡Listo!</ div>< div class="desc" >WartzDash aparece en tu pantalla de inicio como una app. Al abrirla, se muestra en pantalla completa sin barra de Safari.</ div ></ div ></ div >
+</ div >>
+
+<h3>Opción B — Desde archivos locales (sin internet)</h3>
+<div class="step-grid">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="title">Pasá el archivo al iPhone</div><div class="desc">Usá AirDrop, iCloud Drive, o el cable para copiar <code>wartzdash-app.html</code> a tu iPhone.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="title">Abrirlo con Safari</div><div class="desc">En la app Archivos, tocá el archivo. Si no se abre con Safari, mantenés presionado → "Abrir con" → Safari.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="title">Agregar a pantalla de inicio</div><div class="desc">Ícono compartir (↑) → "Agregar a pantalla de inicio" → "Agregar".</div></div></div>
+</div>
+
+<div class="note"><strong>Nota:</strong> Con la opción B (archivo local), <code>localStorage</code> puede no persistir entre sesiones en algunos iOS. Se recomienda la Opción A para guardar los datos de forma confiable.</div>
+
+<h2>Requisitos</h2>
+<ul>
+  <li>iPhone con <strong>iOS 14 o superior</strong></li>
+  <li>Navegador <strong>Safari</strong> (otros navegadores en iOS no permiten "Agregar a pantalla de inicio" correctamente)</li>
+  <li>No requiere registro, cuenta ni conexión a internet una vez instalada</li>
+</ul>
+
+</body>
+</html>
