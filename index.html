@@ -590,7 +590,7 @@ const now=new Date();
 const hr=now.getHours();
 const greet=hr<12?'Buenos días':hr<18?'Buenas tardes':'Buenas noches';
 const greetIco=hr<12?'🌅':hr<18?'☀️':'🌙';
-$('greet').innerHTML=`${greet} ${greetIco}`;
+$('greet').innerHTML=`${greet}, <em>Ulises</em> ${greetIco}`;
 $('hdr-date').textContent=now.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'});
 
 // ════════════════════════════════════
