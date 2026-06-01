@@ -159,7 +159,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .habit-chk-btn.done{background:var(--green);border-color:var(--green)}
 .habit-chk-btn svg{width:14px;height:14px;stroke:var(--t3);stroke-width:2.5;fill:none}
 .habit-chk-btn.done svg{stroke:#000}
-.heatmap{display:flex;gap:3px;overflow-x:auto;padding-bottom:4px}
+.heatmap{display:flex;gap:3px;flex-wrap:wrap;padding:5px 3px 4px}
 .heatmap::-webkit-scrollbar{display:none}
 .hm-col{display:flex;flex-direction:column;gap:3px}
 .hm-cell{width:11px;height:11px;border-radius:2px;background:var(--border);transition:background .3s;flex-shrink:0}
@@ -576,7 +576,9 @@ const CATS=['🍕','🚗','🏠','💊','🎮','📚','👗','☕','✈️','�
 const PRIO_META={p1:{label:'Urgente',color:'#EF4444'},p2:{label:'Alta',color:'#F59E0B'},p3:{label:'Normal',color:'#60A5FA'},p4:{label:'Baja',color:'#6B9B70'}};
 const SUBJ_COLORS=['#22C55E','#60A5FA','#F59E0B','#A78BFA','#F472B6','#2DD4BF','#FB923C','#EF4444'];
 const $=id=>document.getElementById(id);
-const today=()=>new Date().toISOString().split('T')[0];
+// Fecha calendario en UTC-3 (Argentina) para un Date dado — el día "termina" a las 00:00 AR
+function isoAR(dt){return new Date(dt.getTime()-3*3600*1000).toISOString().split('T')[0];}
+const today=()=>isoAR(new Date());
 
 let S={tasks:[],habits:[],workouts:[],sessions:[],exercises:[],transactions:[],budgets:[],subjects:[],notes:[],pomoNotes:[],pomoCount:0,pomoCountDate:'',};
 function load(){try{const d=localStorage.getItem('rimu2');if(d)S={...S,...JSON.parse(d)};}catch(e){}}
@@ -683,7 +685,7 @@ function setPrioFilter(p,btn){
 }
 function selNewPrio(p,btn){
   newPrio=p;
-  document.querySelectorAll('#new-task-prio .pc').forEach(b=>{b.className='pc '+b.id.replace('nprio-','');});
+  document.querySelectorAll('#new-task-prio .pc').forEach(b=>{b.className='pc';});
   btn.className='pc '+p+' sel-prio';
 }
 function addTask(){
@@ -753,7 +755,7 @@ function renderKanban(){
 function renderWeek(){
   const days=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
   const base=new Date();base.setDate(base.getDate()-base.getDay());
-  const cols=Array.from({length:7},(_,i)=>{const d=new Date(base);d.setDate(d.getDate()+i);return {label:days[d.getDay()],date:d.toISOString().split('T')[0]};});
+  const cols=Array.from({length:7},(_,i)=>{const d=new Date(base);d.setDate(d.getDate()+i);return {label:days[d.getDay()],date:isoAR(d)};});
   $('week-grid-wrap').innerHTML=`<div class="week-grid">${cols.map(c=>`<div><div class="wday">${c.label}</div><div class="wday-tasks">${S.tasks.filter(t=>t.created===c.date&&!t.done).slice(0,3).map(t=>`<div class="wday-task">${t.text}</div>`).join('')}</div></div>`).join('')}</div>`;
 }
 
@@ -879,7 +881,7 @@ function skipDay(id){
 function delHabit(id){S.habits=S.habits.filter(x=>x.id!==id);save();renderHabits();renderHome();}
 function calcStreak(log,skips=[]){
   let s=0;const d=new Date();
-  while(true){const str=d.toISOString().split('T')[0];if(log.includes(str)){s++;}else if(skips.includes(str)){}else break;d.setDate(d.getDate()-1);}
+  while(true){const str=isoAR(d);if(log.includes(str)){s++;}else if(skips.includes(str)){}else break;d.setDate(d.getDate()-1);}
   return s;
 }
 function buildHeatmap(log,skips){
@@ -887,10 +889,10 @@ function buildHeatmap(log,skips){
   const days=7;const cells=[];
   for(let i=days-1;i>=0;i--){
     const dt=new Date();dt.setDate(dt.getDate()-i);
-    const str=dt.toISOString().split('T')[0];
+    const str=isoAR(dt);
     const isToday=str===today();
     const done=log.includes(str);const skip=skips.includes(str);
-    const consecutive=done?Math.min(4,1+(log.filter(l=>l<=str&&l>=(new Date(dt.getTime()-3*86400000)).toISOString().split('T')[0]).length)):0;
+    const consecutive=done?Math.min(4,1+(log.filter(l=>l<=str&&l>=isoAR(new Date(dt.getTime()-3*86400000))).length)):0;
     cells.push(`<div class="hm-cell${done?' d'+consecutive:''}${skip?' d1':''} ${isToday?'today':''}" title="${str}"></div>`);
   }
   return`<div class="heatmap">${cells.join('')}</div>`;
@@ -1279,14 +1281,15 @@ document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault
 // ── Midnight reset: re-render cuando cambia el día ──
 (function scheduleMidnightReset(){
   const now=new Date();
-  const midnight=new Date(now);
-  midnight.setHours(24,0,0,500); // 00:00:00.5 del día siguiente
+  const next=new Date(now);
+  next.setUTCHours(3,0,0,200); // 03:00 UTC = 00:00 en UTC-3 (Argentina)
+  if(next.getTime()<=now.getTime())next.setUTCDate(next.getUTCDate()+1);
   setTimeout(()=>{
     renderHome();
     renders[curScreen]&&renders[curScreen]();
     toast('🌙 Nuevo día — ¡buenos días!');
     scheduleMidnightReset();
-  }, midnight-now);
+  }, next.getTime()-now.getTime());
 })();
 </script>
 </body>
