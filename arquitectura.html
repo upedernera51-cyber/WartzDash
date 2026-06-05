@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WzLab — Arquitectura</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0C0608;--s1:#170B11;--s2:#21121A;--s3:#2A1620;--border:#3A2230;
+  --accent:#F43F5E;--accent-dim:#BE123C;--glow:#F43F5E18;
+  --amber:#F59E0B;--blue:#60A5FA;--purple:#A78BFA;--teal:#2DD4BF;--orange:#FB923C;--green:#34D399;
+  --txt:#F3E6EA;--t2:#A87C8A;--t3:#5A3343;
+}
+html,body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{max-width:1180px;margin:0 auto;padding:32px 20px 80px}
+a{color:var(--accent)}
+
+/* Header */
+.head{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+.logo{width:56px;height:56px;border-radius:15px;flex-shrink:0}
+.head h1{font-size:30px;font-weight:800;letter-spacing:-1px}
+.head h1 span{color:var(--accent)}
+.sub{color:var(--t2);font-size:15px;margin-bottom:6px}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 30px}
+.pill{font-size:12px;font-weight:600;background:var(--s2);border:1px solid var(--border);border-radius:99px;padding:5px 12px;color:var(--t2)}
+.pill b{color:var(--txt)}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+@media(max-width:880px){.layout{grid-template-columns:1fr}}
+
+/* Layers */
+.layer{background:linear-gradient(180deg,var(--s1),var(--bg));border:1px solid var(--border);border-radius:18px;padding:16px 16px 18px;margin-bottom:14px;position:relative}
+.layer-head{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+.layer-num{width:26px;height:26px;border-radius:8px;background:var(--glow);border:1px solid var(--accent);color:var(--accent);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.layer-title{font-size:15px;font-weight:700;letter-spacing:.2px}
+.layer-desc{font-size:12.5px;color:var(--t2);margin-left:auto;text-align:right;max-width:50%}
+.flow{display:flex;justify-content:center;margin:-4px 0 10px;color:var(--t3);font-size:18px}
+
+.nodes{display:flex;flex-wrap:wrap;gap:9px}
+.node{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:11px 13px;cursor:pointer;transition:all .15s;flex:1 1 auto;min-width:120px}
+.node:hover{border-color:var(--accent);background:var(--s3);transform:translateY(-2px)}
+.node.active{border-color:var(--accent);background:var(--glow);box-shadow:0 0 0 1px var(--accent)}
+.node .ico{font-size:19px}
+.node .nm{font-size:13.5px;font-weight:600;margin-top:5px}
+.node .tg{font-size:11px;color:var(--t2);margin-top:2px}
+.node .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:middle}
+
+/* Detail panel */
+.panel{position:sticky;top:20px;background:var(--s1);border:1px solid var(--border);border-radius:18px;padding:20px;min-height:320px}
+.panel .ph{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3)}
+.panel .pt{font-size:21px;font-weight:800;margin:6px 0 4px;display:flex;align-items:center;gap:9px}
+.panel .pt .e{font-size:24px}
+.panel .pd{font-size:14px;color:var(--t2);margin-bottom:16px}
+.panel h4{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--accent);margin:16px 0 8px}
+.panel ul{list-style:none}
+.panel li{font-size:13px;color:var(--txt);padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px}
+.panel li:last-child{border:none}
+.panel li code{background:var(--s3);color:var(--accent);padding:1px 7px;border-radius:6px;font-size:12px;font-family:'SF Mono',Consolas,monospace;white-space:nowrap}
+.panel .empty{color:var(--t3);font-size:14px;text-align:center;padding:48px 10px}
+
+/* Data model */
+.section-title{font-size:14px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t2);margin:36px 0 14px;border-bottom:1px solid var(--border);padding-bottom:8px}
+.state-box{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:18px;overflow-x:auto}
+.state-box .root{font-family:'SF Mono',Consolas,monospace;font-size:13px;color:var(--t2);margin-bottom:12px}
+.state-box .root b{color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.field{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:11px 13px}
+.field .k{font-family:'SF Mono',Consolas,monospace;font-size:13px;color:var(--accent);font-weight:600}
+.field .t{font-size:11px;color:var(--t3);margin-left:6px}
+.field .d{font-size:12px;color:var(--t2);margin-top:4px;line-height:1.45}
+
+.foot{margin-top:34px;font-size:12.5px;color:var(--t3);text-align:center;line-height:1.7}
+.kbd{font-family:'SF Mono',Consolas,monospace;background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:1px 7px;color:var(--t2)}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <img class="logo" src="wzlab-icon.svg" alt="WzLab" onerror="this.style.display='none'">
+  <div>
+    <h1>Wz<span>Lab</span> · Arquitectura</h1>
+  </div>
+</div>
+<div class="sub">PWA de organización personal — un solo archivo, sin backend ni dependencias. Tocá cualquier bloque para ver el detalle.</div>
+
+<div class="meta-row">
+  <span class="pill">📄 <b>1 archivo</b> · index.html</span>
+  <span class="pill">⚙️ <b>Vanilla JS</b> · 0 dependencias</span>
+  <span class="pill">💾 <b>localStorage</b> · key "rimu2"</span>
+  <span class="pill">🌐 <b>Offline-first</b> · sin red</span>
+  <span class="pill">🚀 <b>Vercel</b> · branch main</span>
+  <span class="pill">🕒 <b>UTC-3</b> · día corta a 00:00 AR</span>
+</div>
+
+<div class="layout">
+  <div class="diagram">
+
+    <!-- Layer 1 -->
+    <div class="layer">
+      <div class="layer-head"><div class="layer-num">1</div><div class="layer-title">Shell PWA</div><div class="layer-desc">Cómo el navegador la trata como app instalable</div></div>
+      <div class="nodes">
+        <div class="node" data-k="pwa"><div class="ico">📱</div><div class="nm">Meta PWA + Manifest</div><div class="tg">standalone · iOS/Android</div></div>
+        <div class="node" data-k="icons"><div class="ico">🎨</div><div class="nm">Iconos</div><div class="tg">SVG + PNG generados</div></div>
+        <div class="node" data-k="shell"><div class="ico">🧩</div><div class="nm">Layout & safe-area</div><div class="tg">#app · scroll · nav</div></div>
+        <div class="node" data-k="zoom"><div class="ico">🔒</div><div class="nm">Anti-zoom iOS</div><div class="tg">gesture/touch handlers</div></div>
+      </div>
+    </div>
+    <div class="flow">▼</div>
+
+    <!-- Layer 2 -->
+    <div class="layer">
+      <div class="layer-head"><div class="layer-num">2</div><div class="layer-title">Navegación & Router</div><div class="layer-desc">Una sola página, pantallas que se muestran/ocultan</div></div>
+      <div class="nodes">
+        <div class="node" data-k="nav"><div class="ico">🧭</div><div class="nm">Bottom Nav</div><div class="tg">goTo() · 4 botones</div></div>
+        <div class="node" data-k="more"><div class="ico">⋯</div><div class="nm">More Sheet</div><div class="tg">goToMore() · bottom sheet</div></div>
+        <div class="node" data-k="router"><div class="ico">🔀</div><div class="nm">Render Router</div><div class="tg">renders[name]()</div></div>
+      </div>
+    </div>
+    <div class="flow">▼</div>
+
+    <!-- Layer 3 -->
+    <div class="layer">
+      <div class="layer-head"><div class="layer-num">3</div><div class="layer-title">Módulos / Pantallas</div><div class="layer-desc">Cada uno con su estado de vista y render propio</div></div>
+      <div class="nodes">
+        <div class="node" data-k="home"><div class="ico">🏠</div><div class="nm">Inicio</div><div class="tg">dashboard</div></div>
+        <div class="node" data-k="tasks"><div class="ico">✅</div><div class="nm">Tareas</div><div class="tg">lista · kanban · semana</div></div>
+        <div class="node" data-k="habits"><div class="ico">🔥</div><div class="nm">Hábitos</div><div class="tg">franjas · calendario</div></div>
+        <div class="node" data-k="workout"><div class="ico">🏋️</div><div class="nm">Workout</div><div class="tg">templates · sesión</div></div>
+        <div class="node" data-k="study"><div class="ico">📚</div><div class="nm">Estudio</div><div class="tg">materias · notas</div></div>
+        <div class="node" data-k="focus"><div class="ico">🍅</div><div class="nm">Enfoque</div><div class="tg">pomodoro</div></div>
+        <div class="node" data-k="finance"><div class="ico">💰</div><div class="nm">Finanzas</div><div class="tg">presente · oculto</div></div>
+      </div>
+    </div>
+    <div class="flow">▼</div>
+
+    <!-- Layer 4 -->
+    <div class="layer">
+      <div class="layer-head"><div class="layer-num">4</div><div class="layer-title">Lógica de dominio</div><div class="layer-desc">Funciones puras + efectos (timers, fechas)</div></div>
+      <div class="nodes">
+        <div class="node" data-k="time"><div class="ico">🕒</div><div class="nm">Fechas UTC-3</div><div class="tg">isoAR() · today()</div></div>
+        <div class="node" data-k="midnight"><div class="ico">🌙</div><div class="nm">Reset de medianoche</div><div class="tg">scheduler 03:00 UTC</div></div>
+        <div class="node" data-k="timers"><div class="ico">⏱️</div><div class="nm">Timers</div><div class="tg">pomodoro · sesión · estudio</div></div>
+        <div class="node" data-k="streak"><div class="ico">📈</div><div class="nm">Cálculo de racha</div><div class="tg">calcStreak() · heatmap</div></div>
+        <div class="node" data-k="toast"><div class="ico">💬</div><div class="nm">Toast</div><div class="tg">feedback no-bloqueante</div></div>
+      </div>
+    </div>
+    <div class="flow">▼</div>
+
+    <!-- Layer 5 -->
+    <div class="layer">
+      <div class="layer-head"><div class="layer-num">5</div><div class="layer-title">Estado & Persistencia</div><div class="layer-desc">Fuente de verdad única en memoria + disco</div></div>
+      <div class="nodes">
+        <div class="node" data-k="state"><div class="ico">🗃️</div><div class="nm">Objeto S</div><div class="tg">estado global</div></div>
+        <div class="node" data-k="persist"><div class="ico">💾</div><div class="nm">load() / save()</div><div class="tg">localStorage "rimu2"</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Detail panel -->
+  <div class="panel" id="panel">
+    <div class="empty" id="panel-empty">👈 Tocá un bloque del esquema para ver qué hace, sus funciones clave y cómo se conecta.</div>
+    <div id="panel-content" style="display:none">
+      <div class="ph" id="p-layer"></div>
+      <div class="pt"><span class="e" id="p-emoji"></span><span id="p-title"></span></div>
+      <div class="pd" id="p-desc"></div>
+      <div id="p-sections"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Data model -->
+<div class="section-title">Modelo de datos — objeto <code style="color:var(--accent)">S</code></div>
+<div class="state-box">
+  <div class="root">let S = { … } &nbsp;→&nbsp; <b>localStorage.setItem('rimu2', JSON.stringify(S))</b></div>
+  <div class="grid" id="state-grid"></div>
+</div>
+
+<div class="foot">
+  Diagrama interactivo generado para WzLab · vanilla HTML/CSS/JS, sin dependencias.<br>
+  Para abrirlo: servir junto al <span class="kbd">index.html</span> o abrir directo en el navegador.
+</div>
+
+<script>
+const DATA = {
+  pwa:{layer:'Capa 1 · Shell PWA',e:'📱',t:'Meta PWA + Manifest',d:'Etiquetas que le dicen a iOS/Android que esto es una app instalable a pantalla completa.',s:[
+    {h:'Claves',items:['<code>apple-mobile-web-app-capable</code> pantalla completa','<code>manifest.json</code> nombre, íconos, display standalone','<code>theme-color</code> #0C0608','<code>start_url</code> ./ · orientación portrait']}]},
+  icons:{layer:'Capa 1 · Shell PWA',e:'🎨',t:'Iconos',d:'Logo W afilada estilo Zenix sobre dark cherry. SVG para web, PNG para pantalla de inicio.',s:[
+    {h:'Archivos',items:['<code>wzlab-icon.svg</code> favicon + avatar','<code>apple-touch-icon.png</code> 180px opaco (iOS)','<code>wzlab-icon-192/512.png</code> manifest','<code>gen_icon.py</code> regenera los PNG con Pillow']}]},
+  shell:{layer:'Capa 1 · Shell PWA',e:'🧩',t:'Layout & safe-area',d:'Contenedor único de ancho fijo, header + área scrolleable + nav inferior, respetando los notch/safe-area de iOS.',s:[
+    {h:'Estructura',items:['<code>#app</code> flex column, max 430px','<code>.scroll</code> área central scrolleable','<code>.safe-top</code> / <code>--st</code> / <code>--sb</code> insets','<code>.screen.active</code> alterna pantallas']}]},
+  zoom:{layer:'Capa 1 · Shell PWA',e:'🔒',t:'Anti-zoom iOS',d:'iOS ignora user-scalable=no, así que se bloquea el zoom por JS (pinch y doble-tap).',s:[
+    {h:'Handlers',items:['<code>gesturestart/change/end</code> → preventDefault','<code>touchend</code> doble-tap < 350ms','<code>touchmove</code> multi-touch','<code>touch-action:manipulation</code> en CSS']}]},
+  nav:{layer:'Capa 2 · Navegación',e:'🧭',t:'Bottom Nav',d:'Cuatro botones fijos abajo. Cambia la pantalla activa y dispara su render.',s:[
+    {h:'Función',items:['<code>goTo(name, btn)</code>','Quita <code>.active</code> a todas, la pone a una','Marca el botón <code>.on</code>','Llama <code>renders[name]()</code>']},
+    {h:'Destinos',items:['Inicio · Tareas · Hábitos · Más']}]},
+  more:{layer:'Capa 2 · Navegación',e:'⋯',t:'More Sheet',d:'Bottom sheet para las secciones secundarias (Estudio y Enfoque).',s:[
+    {h:'Función',items:['<code>openMore()</code> / <code>closeMore()</code>','<code>goToMore(name, btn)</code>','Overlay + transform translateY']},
+    {h:'Nota',items:['Finanzas existe pero no está enlazada acá']}]},
+  router:{layer:'Capa 2 · Navegación',e:'🔀',t:'Render Router',d:'Mapa nombre→función. No hay framework: cada pantalla se re-renderiza completa al entrar o al mutar datos.',s:[
+    {h:'Mapa',items:['<code>renders = { home, tasks, habits, workout, study, focus, finance }</code>','Cada acción hace <code>save()</code> y vuelve a renderizar','Render = template string → innerHTML']}]},
+  home:{layer:'Capa 3 · Módulos',e:'🏠',t:'Inicio',d:'Dashboard que agrega datos de todos los módulos: tareas de hoy, racha máxima, minutos de estudio y pomodoros.',s:[
+    {h:'Render',items:['<code>renderHome()</code>','Mini-cards con barras de progreso','Lista de tareas pendientes + hábitos de hoy']}]},
+  tasks:{layer:'Capa 3 · Módulos',e:'✅',t:'Tareas',d:'Tres vistas de las mismas tareas. Prioridades, subtareas y filtros.',s:[
+    {h:'Vistas',items:['Lista · Kanban · Semana','<code>setTaskView()</code> alterna']},
+    {h:'Funciones',items:['<code>addTask · toggleTask · delTask</code>','<code>addSubtask · toggleSubtask</code>','Prioridades p1–p4 · filtro por prioridad']}]},
+  habits:{layer:'Capa 3 · Módulos',e:'🔥',t:'Hábitos',d:'Hábitos por franja horaria con racha, heatmap de 7 días y calendario mensual de cumplimiento.',s:[
+    {h:'Funciones',items:['<code>addHabit · toggleHabit · skipDay</code>','<code>calcStreak()</code> racha (respeta skips)','<code>buildHeatmap()</code> últimos 7 días','<code>renderHabitCalendar()</code> mes + %']}]},
+  workout:{layer:'Capa 3 · Módulos',e:'🏋️',t:'Workout',d:'Templates de rutina, sesión en vivo con cronómetro y cardio, e historial.',s:[
+    {h:'Funciones',items:['<code>addTemplate · addExercise</code>','<code>toggleSession · finishSession</code>','Timer de sesión con <code>setInterval</code>']}]},
+  study:{layer:'Capa 3 · Módulos',e:'📚',t:'Estudio',d:'Materias con cronómetro de sesiones de estudio (acumula minutos por día) y un brain-dump de notas.',s:[
+    {h:'Funciones',items:['<code>addSubject · toggleStudySession</code>','<code>addNote</code> brain dump','Logs por materia { date, mins }']}]},
+  focus:{layer:'Capa 3 · Módulos',e:'🍅',t:'Enfoque',d:'Pomodoro con tres modos (trabajo/descanso/largo), anillo de progreso SVG y contador diario.',s:[
+    {h:'Funciones',items:['<code>togglePomo · resetPomo · setPomoMode</code>','Anillo SVG con stroke-dashoffset','<code>pomoCount</code> se resetea por día','Notas de la sesión']}]},
+  finance:{layer:'Capa 3 · Módulos',e:'💰',t:'Finanzas (oculto)',d:'Pantalla completa de ingresos/gastos con resumen mensual e historial de 6 meses. El código vive pero el botón se quitó del menú Más.',s:[
+    {h:'Estado',items:['<code>renderFinance()</code> sigue en el router','<code>S.transactions</code> persiste','Reactivable agregando el botón en More Sheet']}]},
+  time:{layer:'Capa 4 · Dominio',e:'🕒',t:'Fechas UTC-3',d:'Todas las fechas se calculan en huso Argentina para que el día empiece/termine a las 00:00 locales, sin importar el reloj UTC.',s:[
+    {h:'Helper',items:['<code>isoAR(date)</code> resta 3h y toma la fecha ISO','<code>today()</code> = isoAR(now)','Usado en racha, heatmap, calendario y semana']}]},
+  midnight:{layer:'Capa 4 · Dominio',e:'🌙',t:'Reset de medianoche',d:'Si la app queda abierta cruzando la medianoche, se re-renderiza sola y los hábitos del día anterior cuentan para la racha y aparecen desmarcados.',s:[
+    {h:'Scheduler',items:['<code>setTimeout</code> hasta las 03:00 UTC (= 00:00 AR)','Re-renderiza home + pantalla activa','Se re-agenda recursivamente · toast de nuevo día']}]},
+  timers:{layer:'Capa 4 · Dominio',e:'⏱️',t:'Timers',d:'Tres cronómetros independientes basados en setInterval, cada uno con su estado.',s:[
+    {h:'Instancias',items:['Pomodoro · cuenta regresiva','Sesión de workout · cuenta progresiva','Sesión de estudio · acumula minutos']}]},
+  streak:{layer:'Capa 4 · Dominio',e:'📈',t:'Racha & Heatmap',d:'La racha cuenta días consecutivos hacia atrás desde hoy; los días "skip" no la cortan.',s:[
+    {h:'Funciones',items:['<code>calcStreak(log, skips)</code>','<code>buildHeatmap(log, skips)</code> 7 días','Rampa de color cherry por intensidad']}]},
+  toast:{layer:'Capa 4 · Dominio',e:'💬',t:'Toast',d:'Reemplazo de los alert() bloqueantes: un aviso flotante que se autodestruye.',s:[
+    {h:'Función',items:['<code>toast(msg)</code> crea y quita el nodo a los 2.4s','Usado en guardado de sesión y fin de pomodoro']}]},
+  state:{layer:'Capa 5 · Estado',e:'🗃️',t:'Objeto S',d:'Única fuente de verdad en memoria. Todo lo que ves sale de acá; toda mutación pasa por save().',s:[
+    {h:'Colecciones',items:['tasks · habits · workouts · sessions','exercises · transactions · budgets','subjects · notes · pomoNotes','pomoCount · pomoCountDate']}]},
+  persist:{layer:'Capa 5 · Estado',e:'💾',t:'load() / save()',d:'Serialización simple a localStorage. Sin red, sin cuentas: los datos viven en el dispositivo.',s:[
+    {h:'Funciones',items:['<code>load()</code> hidrata S al iniciar','<code>save()</code> persiste tras cada cambio','Key <code>"rimu2"</code> · JSON.stringify','try/catch tolerante a fallos']}]},
+};
+
+const STATE_FIELDS = [
+  {k:'tasks',t:'[]',d:'Tareas con prioridad, subtareas y fecha de creación.'},
+  {k:'habits',t:'[]',d:'Hábitos con log de fechas, skips, racha y franja horaria.'},
+  {k:'workouts',t:'[]',d:'Templates de rutina con ejercicios.'},
+  {k:'sessions',t:'[]',d:'Sesiones de entrenamiento completadas (+ cardio).'},
+  {k:'exercises',t:'[]',d:'Buffer de ejercicios de la sesión en curso.'},
+  {k:'transactions',t:'[]',d:'Ingresos y gastos (módulo Finanzas, oculto).'},
+  {k:'budgets',t:'[]',d:'Reservado para presupuestos.'},
+  {k:'subjects',t:'[]',d:'Materias de estudio con logs de minutos por día.'},
+  {k:'notes',t:'[]',d:'Brain dump de notas rápidas.'},
+  {k:'pomoNotes',t:'[]',d:'Notas tomadas durante sesiones de enfoque.'},
+  {k:'pomoCount',t:'0',d:'Pomodoros completados hoy.'},
+  {k:'pomoCountDate',t:'""',d:'Fecha del contador (para resetear por día).'},
+];
+
+// Render detail panel
+const panelEmpty=document.getElementById('panel-empty');
+const panelContent=document.getElementById('panel-content');
+let activeNode=null;
+document.querySelectorAll('.node').forEach(n=>{
+  n.addEventListener('click',()=>{
+    const k=n.dataset.k, info=DATA[k];
+    if(!info)return;
+    if(activeNode)activeNode.classList.remove('active');
+    n.classList.add('active');activeNode=n;
+    panelEmpty.style.display='none';
+    panelContent.style.display='block';
+    document.getElementById('p-layer').textContent=info.layer;
+    document.getElementById('p-emoji').textContent=info.e;
+    document.getElementById('p-title').textContent=info.t;
+    document.getElementById('p-desc').textContent=info.d;
+    document.getElementById('p-sections').innerHTML=(info.s||[]).map(sec=>
+      `<h4>${sec.h}</h4><ul>${sec.items.map(it=>`<li>${it}</li>`).join('')}</ul>`).join('');
+    if(window.innerWidth<880)document.getElementById('panel').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+
+// Render state grid
+document.getElementById('state-grid').innerHTML=STATE_FIELDS.map(f=>
+  `<div class="field"><span class="k">${f.k}</span><span class="t">${f.t}</span><div class="d">${f.d}</div></div>`).join('');
+</script>
+</body>
+</html>
