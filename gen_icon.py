@@ -10,7 +10,7 @@ radius = 112 * SS
 # --- W afilada estilo Zenix: polilínea con offset perpendicular, miter y puntas ---
 P = [(112, 150), (196, 360), (256, 230), (316, 360), (400, 150)]  # nodos centro
 HW = 30        # media-anchura del trazo
-TIP = 30       # cuánto sobresalen las puntas de las puntas superiores
+TIP = 78       # cuánto sobresalen las puntas de las puntas superiores
 MITER_MAX = 120
 
 def unit(ax, ay, bx, by):

@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="WzLab">
-<meta name="theme-color" content="#080D0A">
+<meta name="theme-color" content="#0C0608">
 <link rel="icon" type="image/svg+xml" href="wzlab-icon.svg">
 <link rel="icon" type="image/png" sizes="512x512" href="wzlab-icon-512.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -15,12 +15,12 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#080D0A;--s1:#0E1710;--s2:#142019;--border:#1C2E20;
-  --green:#22C55E;--gdim:#16A34A;--glow:#22C55E18;
+  --bg:#0C0608;--s1:#170B11;--s2:#21121A;--border:#3A2230;
+  --green:#F43F5E;--gdim:#BE123C;--glow:#F43F5E18;
   --amber:#F59E0B;--red:#EF4444;--blue:#60A5FA;--purple:#A78BFA;--pink:#F472B6;--teal:#2DD4BF;--orange:#FB923C;
-  --txt:#E4F0E6;--t2:#6B9B70;--t3:#2E4A32;
+  --txt:#F3E6EA;--t2:#A87C8A;--t3:#5A3343;
   --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
-  --hover:#1E3025;
+  --hover:#2E1822;
 }
 html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased;touch-action:manipulation;-webkit-text-size-adjust:100%}
 #app{display:flex;flex-direction:column;height:100svh;max-width:430px;margin:0 auto;position:relative;overflow:hidden}
@@ -85,7 +85,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .empty svg{width:40px;height:40px;margin:0 auto 10px;display:block;stroke:var(--t3);fill:none;stroke-width:1.2}
 .empty p{font-size:14px;line-height:1.5}
 .chip{font-size:10px;font-weight:700;letter-spacing:.4px;padding:3px 8px;border-radius:99px}
-.badge-green{background:#22C55E18;color:var(--green)}
+.badge-green{background:#F43F5E18;color:var(--green)}
 .badge-amber{background:#F59E0B18;color:var(--amber)}
 .badge-red{background:#EF444418;color:var(--red)}
 .badge-blue{background:#60A5FA18;color:var(--blue)}
@@ -121,7 +121,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .pc.p1{background:#EF444420;border-color:var(--red);color:var(--red)}
 .pc.p2{background:#F59E0B20;border-color:var(--amber);color:var(--amber)}
 .pc.p3{background:#60A5FA20;border-color:var(--blue);color:var(--blue)}
-.pc.p4{background:#3D6042;border-color:var(--t2);color:var(--t2)}
+.pc.p4{background:#432836;border-color:var(--t2);color:var(--t2)}
 .task-card{background:var(--s2);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;overflow:hidden;animation:up .2s ease}
 .task-main{display:flex;align-items:center;gap:10px;padding:12px 12px 12px 12px;cursor:pointer}
 .task-main:active{background:var(--s1)}
@@ -168,14 +168,14 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .heatmap::-webkit-scrollbar{display:none}
 .hm-col{display:flex;flex-direction:column;gap:3px}
 .hm-cell{width:11px;height:11px;border-radius:2px;background:var(--border);transition:background .3s;flex-shrink:0}
-.hm-cell.d1{background:#14532D}
-.hm-cell.d2{background:#15803D}
-.hm-cell.d3{background:#16A34A}
+.hm-cell.d1{background:#4D1A2A}
+.hm-cell.d2{background:#8A1E3E}
+.hm-cell.d3{background:#C21E4C}
 .hm-cell.d4{background:var(--green)}
 .hm-cell.today{outline:2px solid var(--amber);outline-offset:1px}
 .habit-skip-btn{background:none;border:1px solid var(--border);border-radius:7px;padding:4px 10px;color:var(--t2);font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .14s}
 .habit-skip-btn.skipped{background:#F59E0B15;border-color:var(--amber);color:var(--amber)}
-.time-badge{font-size:10px;font-weight:700;letter-spacing:.4px;padding:2px 7px;border-radius:99px;background:#22C55E12;color:var(--green)}
+.time-badge{font-size:10px;font-weight:700;letter-spacing:.4px;padding:2px 7px;border-radius:99px;background:#F43F5E12;color:var(--green)}
 
 /* ── WORKOUT ── */
 .template-card{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
@@ -248,7 +248,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 /* ── FINANCE ── */
 .fin-type-row{display:flex;gap:6px;margin-bottom:10px}
 .ft-btn{flex:1;padding:9px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .14s}
-.ft-btn.income.on{border-color:var(--green);background:#22C55E20;color:var(--green)}
+.ft-btn.income.on{border-color:var(--green);background:#F43F5E20;color:var(--green)}
 .ft-btn.expense.on{border-color:var(--red);background:#EF444420;color:var(--red)}
 .tx-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .tx-item:last-child{border:none}
@@ -579,7 +579,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 // ════════════════════════════════════
 const CATS=['🍕','🚗','🏠','💊','🎮','📚','👗','☕','✈️','💪','💰','💼','🎁','🏥','🛒','📱','🎵','⚡','🐾','🌿','🍺','🐶','🏋️','🎓','🎯','💈','🌊','🍎'];
 const PRIO_META={p1:{label:'Urgente',color:'#EF4444'},p2:{label:'Alta',color:'#F59E0B'},p3:{label:'Normal',color:'#60A5FA'},p4:{label:'Baja',color:'#6B9B70'}};
-const SUBJ_COLORS=['#22C55E','#60A5FA','#F59E0B','#A78BFA','#F472B6','#2DD4BF','#FB923C','#EF4444'];
+const SUBJ_COLORS=['#F43F5E','#60A5FA','#F59E0B','#A78BFA','#F472B6','#2DD4BF','#FB923C','#EF4444'];
 const $=id=>document.getElementById(id);
 // Fecha calendario en UTC-3 (Argentina) para un Date dado — el día "termina" a las 00:00 AR
 function isoAR(dt){return new Date(dt.getTime()-3*3600*1000).toISOString().split('T')[0];}
@@ -798,7 +798,7 @@ function renderHabitCalendar(){
     const done=(allLogs[str]||[]).length;
     const pct=totalHabits>0?done/totalHabits:0;
     const isToday=str===today();
-    const intensity=pct===0?'':pct<0.34?'#14532D':pct<0.67?'#16A34A':'#22C55E';
+    const intensity=pct===0?'':pct<0.34?'#6A1E36':pct<0.67?'#B01E48':'#F43F5E';
     cells+=`<div onclick="showCalDay('${str}')" style="aspect-ratio:1;border-radius:8px;background:${intensity||'var(--s2)'};border:${isToday?'2px solid var(--amber)':'1px solid var(--border)'};display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s">
       <div style="font-size:12px;font-weight:${isToday?'700':'400'};color:${isToday?'var(--amber)':'var(--t2)'}">${d}</div>
       ${done>0?`<div style="font-size:9px;color:${pct===1?'var(--green)':'var(--txt)'};font-weight:600">${done}/${totalHabits}</div>`:''}
@@ -822,9 +822,9 @@ function renderHabitCalendar(){
     </div>
     <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:20px">${cells}</div>
     <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;font-size:11px;color:var(--t2)">
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:#14532D;border-radius:3px;display:inline-block"></span>1–33%</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:#16A34A;border-radius:3px;display:inline-block"></span>34–66%</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:#22C55E;border-radius:3px;display:inline-block"></span>67–100%</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:#6A1E36;border-radius:3px;display:inline-block"></span>1–33%</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:#B01E48;border-radius:3px;display:inline-block"></span>34–66%</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:#F43F5E;border-radius:3px;display:inline-block"></span>67–100%</span>
     </div>
     <div class="sl">Cumplimiento por hábito</div>
     ${habitStats.length?`<div class="habit-stat-row">${habitStats.map(h=>`
