@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw
 
 SS = 4  # supersample factor
 S = 512 * SS
-BG = (77, 10, 20, 255)      # #4D0A14 dark cherry
+BG = (78, 27, 46, 255)      # #4E1B2E dark cherry (tono iPhone, burgundy violáceo)
 FG = (0, 0, 0, 255)         # negra
 radius = 112 * SS
 sw = 56 * SS                # stroke width
